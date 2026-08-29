@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Clipboard base shadow -->
+    <path
+        android:pathData="M31,27 L77,27 A6,6 0 0,1 83,33 L83,83 A6,6 0 0,1 77,89 L31,89 A6,6 0 0,1 25,83 L25,33 A6,6 0 0,1 31,27 Z"
+        android:fillColor="#250F172A" />
+
+    <!-- Clipboard / Task Card Body -->
+    <path
+        android:pathData="M32,26 L76,26 A5,5 0 0,1 81,31 L81,81 A5,5 0 0,1 76,86 L32,86 A5,5 0 0,1 27,81 L27,31 A5,5 0 0,1 32,26 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="27"
+                android:startY="26"
+                android:endX="81"
+                android:endY="86"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFFFFF" />
+                <item android:offset="1.0" android:color="#F1F5F9" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Top clip holder -->
+    <path
+        android:pathData="M44,22 L64,22 A3,3 0 0,1 67,25 L67,28 A2,2 0 0,1 65,30 L43,30 A2,2 0 0,1 41,28 L41,25 A3,3 0 0,1 44,22 Z"
+        android:fillColor="#4F46E5" />
+
+    <!-- Checkmark item 1 (completed - emerald green) -->
+    <path
+        android:pathData="M34,42m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"
+        android:fillColor="#10B981" />
+    <path
+        android:pathData="M32.5,42 L33.8,43.3 L36.2,40.8"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- Task line 1 -->
+    <path
+        android:pathData="M43,42 L72,42"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round" />
+
+    <!-- Checkmark item 2 (completed - cyan blue) -->
+    <path
+        android:pathData="M34,54m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"
+        android:fillColor="#38BDF8" />
+    <path
+        android:pathData="M32.5,54 L33.8,55.3 L36.2,52.8"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- Task line 2 -->
+    <path
+        android:pathData="M43,54 L68,54"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round" />
+
+    <!-- Item 3 (active / in progress - indigo) -->
+    <path
+        android:pathData="M34,66m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"
+        android:strokeColor="#6366F1"
+        android:strokeWidth="1.8" />
+    <!-- Task line 3 -->
+    <path
+        android:pathData="M43,66 L62,66"
+        android:strokeColor="#334155"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round" />
+
+    <!-- Bottom mini progress bar -->
+    <path
+        android:pathData="M34,77 L74,77"
+        android:strokeColor="#E2E8F0"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M34,77 L62,77"
+        android:strokeColor="#6366F1"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+</vector>

@@ -1,0 +1,7 @@
+{
+  "name": "Task Tracker",
+  "description": "Task tracker with full user login and a personalized dashboard for progress tracking",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
