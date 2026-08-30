@@ -1,12 +1,13 @@
 package com.example.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,380 +17,236 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.DeleteSweep
-import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Sort
-import androidx.compose.material.icons.filled.TaskAlt
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.Task
-import com.example.data.model.TaskCategory
-import com.example.ui.components.TaskCard
-import com.example.ui.viewmodel.TaskSortOption
-import com.example.ui.viewmodel.TaskStatusFilter
 
 @Composable
 fun TasksScreen(
   tasks: List<Task>,
-  rawTasks: List<Task>,
-  currentStatusFilter: TaskStatusFilter,
-  currentCategoryFilter: TaskCategory?,
   searchQuery: String,
-  sortOption: TaskSortOption,
-  onStatusFilterChange: (TaskStatusFilter) -> Unit,
-  onCategoryFilterChange: (TaskCategory?) -> Unit,
   onSearchQueryChange: (String) -> Unit,
-  onSortOptionChange: (TaskSortOption) -> Unit,
-  onToggleTask: (Task) -> Unit,
+  selectedCategory: String?,
+  onCategorySelect: (String?) -> Unit,
+  sortBy: String,
+  onSortChange: (String) -> Unit,
+  onToggleComplete: (Task) -> Unit,
   onToggleSubtask: (Task, String) -> Unit,
   onEditTask: (Task) -> Unit,
-  onDeleteTask: (Long) -> Unit,
-  onClearCompleted: () -> Unit,
-  onAddTaskClick: () -> Unit
+  onDeleteTask: (Long) -> Unit
 ) {
-  var showSortMenu by remember { mutableStateOf(false) }
-  val categoryScrollState = rememberScrollState()
-  val statusScrollState = rememberScrollState()
-
-  Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background)
-  ) {
-    // Header & Search Area
+  Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
     Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 18.dp, vertical = 8.dp)
+      modifier = Modifier.fillMaxSize()
     ) {
+      // Top Bar
       Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 20.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Column {
-          Text(
-            text = "Tasks & Goals",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-          )
-          Text(
-            text = "${tasks.size} task${if (tasks.size == 1) "" else "s"} found",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-          )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Icon(Icons.Default.ArrowBack, contentDescription = "Back", modifier = Modifier.size(24.dp))
+          Spacer(modifier = Modifier.width(16.dp))
+          Text("My Tasks", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         }
-
-        // Sort Selector
-        Box {
-          TextButton(
-            onClick = { showSortMenu = true },
-            modifier = Modifier.testTag("sort_dropdown_btn")
-          ) {
-            Icon(
-              imageVector = Icons.Default.Sort,
-              contentDescription = "Sort",
-              tint = MaterialTheme.colorScheme.primary,
-              modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-              text = sortOption.label,
-              style = MaterialTheme.typography.labelSmall,
-              fontWeight = FontWeight.Bold,
-              color = MaterialTheme.colorScheme.primary
-            )
-          }
-
-          DropdownMenu(
-            expanded = showSortMenu,
-            onDismissRequest = { showSortMenu = false }
-          ) {
-            TaskSortOption.values().forEach { option ->
-              DropdownMenuItem(
-                text = {
-                  Text(
-                    option.label,
-                    fontWeight = if (option == sortOption) FontWeight.Bold else FontWeight.Normal
-                  )
-                },
-                onClick = {
-                  onSortOptionChange(option)
-                  showSortMenu = false
-                }
-              )
-            }
-          }
+        
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Icon(Icons.Default.Search, contentDescription = "Search", modifier = Modifier.size(24.dp))
+          Spacer(modifier = Modifier.width(16.dp))
+          // Avatar Placeholder
+          Box(
+            modifier = Modifier
+              .size(32.dp)
+              .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(4.dp))
+              .background(Color(0xFFF9FAFB))
+          )
         }
       }
 
-      Spacer(modifier = Modifier.height(10.dp))
-
-      // Search Bar
-      OutlinedTextField(
-        value = searchQuery,
-        onValueChange = onSearchQueryChange,
-        placeholder = { Text("Search by task title or details...", fontSize = 14.sp) },
-        leadingIcon = {
-          Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary)
-        },
-        trailingIcon = {
-          if (searchQuery.isNotEmpty()) {
-            IconButton(onClick = { onSearchQueryChange("") }) {
-              Icon(Icons.Default.Clear, contentDescription = "Clear search")
-            }
-          }
-        },
-        singleLine = true,
-        shape = RoundedCornerShape(14.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-          focusedContainerColor = MaterialTheme.colorScheme.surface,
-          unfocusedContainerColor = MaterialTheme.colorScheme.surface
-        ),
-        modifier = Modifier
-          .fillMaxWidth()
-          .testTag("search_tasks_input")
-      )
-    }
-
-    // Status Filter Chips Row
-    Row(
-      modifier = Modifier
-        .fillMaxWidth()
-        .horizontalScroll(statusScrollState)
-        .padding(horizontal = 18.dp, vertical = 4.dp),
-      horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-      TaskStatusFilter.values().forEach { filter ->
-        val isSelected = filter == currentStatusFilter
-        FilterChip(
-          selected = isSelected,
-          onClick = { onStatusFilterChange(filter) },
-          label = {
-            Text(
-              filter.label,
-              fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-            )
-          },
-          colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.primary,
-            selectedLabelColor = Color.White
-          ),
-          shape = RoundedCornerShape(10.dp),
-          modifier = Modifier.testTag("status_filter_${filter.name.lowercase()}")
-        )
-      }
-    }
-
-    // Category Filter Chips Row
-    Row(
-      modifier = Modifier
-        .fillMaxWidth()
-        .horizontalScroll(categoryScrollState)
-        .padding(horizontal = 18.dp, vertical = 4.dp),
-      horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-      // "All Categories" chip
-      val isAllSelected = currentCategoryFilter == null
-      Box(
-        modifier = Modifier
-          .clip(RoundedCornerShape(8.dp))
-          .background(
-            if (isAllSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-          )
-          .clickable { onCategoryFilterChange(null) }
-          .padding(horizontal = 10.dp, vertical = 6.dp)
-          .testTag("cat_filter_all")
-      ) {
-        Text(
-          text = "All Categories",
-          style = MaterialTheme.typography.labelSmall,
-          fontWeight = if (isAllSelected) FontWeight.Bold else FontWeight.Normal,
-          color = if (isAllSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-        )
-      }
-
-      TaskCategory.values().forEach { category ->
-        val isSelected = currentCategoryFilter == category
-        Box(
-          modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(
-              if (isSelected) category.color.copy(alpha = 0.25f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            )
-            .clickable { onCategoryFilterChange(if (isSelected) null else category) }
-            .padding(horizontal = 10.dp, vertical = 6.dp)
-            .testTag("cat_filter_${category.name.lowercase()}")
-        ) {
-          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-          ) {
-            Icon(
-              imageVector = category.icon,
-              contentDescription = null,
-              tint = if (isSelected) category.color else MaterialTheme.colorScheme.onSurfaceVariant,
-              modifier = Modifier.size(13.dp)
-            )
-            Text(
-              text = category.displayName,
-              style = MaterialTheme.typography.labelSmall,
-              fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-              color = if (isSelected) category.color else MaterialTheme.colorScheme.onSurfaceVariant
-            )
-          }
-        }
-      }
-    }
-
-    // Clear completed tasks button when in completed filter
-    if (currentStatusFilter == TaskStatusFilter.COMPLETED && tasks.isNotEmpty()) {
+      // Filters
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(horizontal = 18.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.End
+          .horizontalScroll(rememberScrollState())
+          .padding(horizontal = 20.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
       ) {
-        TextButton(
-          onClick = onClearCompleted,
-          modifier = Modifier.testTag("clear_completed_btn")
-        ) {
-          Icon(
-            imageVector = Icons.Default.DeleteSweep,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier.size(16.dp)
-          )
-          Spacer(modifier = Modifier.width(4.dp))
-          Text(
-            "Clear Completed Tasks",
-            color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.labelSmall
-          )
-        }
+        FilterChip(text = "Sort: Due Date", isActive = true)
+        FilterChip(text = "Filter: Work", isActive = true, hasClose = true)
+        FilterChip(text = "+ Add Filter", isActive = false)
+      }
+      
+      Spacer(modifier = Modifier.height(16.dp))
+
+      // Date Picker / Month View
+      Text(
+        "August 2026",
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(horizontal = 20.dp)
+      )
+      Spacer(modifier = Modifier.height(12.dp))
+      
+      LazyRow(
+        contentPadding = PaddingValues(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+      ) {
+        item { DateCard(date = "12", day = "Wed", isSelected = false) }
+        item { DateCard(date = "13", day = "Thu", isSelected = false) }
+        item { DateCard(date = "14", day = "Fri", isSelected = true) }
+        item { DateCard(date = "15", day = "Sat", isSelected = false) }
+        item { DateCard(date = "16", day = "Sun", isSelected = false) }
+        item { DateCard(date = "17", day = "Mon", isSelected = false) }
+      }
+
+      Spacer(modifier = Modifier.height(24.dp))
+      
+      // Tasks List Header
+      Text(
+        "Work Tasks (4)",
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.SemiBold,
+        color = Color(0xFF6B7280),
+        modifier = Modifier.padding(horizontal = 20.dp)
+      )
+      
+      Spacer(modifier = Modifier.height(8.dp))
+
+      LazyColumn(
+        modifier = Modifier.fillMaxWidth().weight(1f),
+        contentPadding = PaddingValues(bottom = 80.dp)
+      ) {
+        // Mock items to match design
+        item { MockTaskListItem("Prepare Q3 roadmap", "Today • 11:00 AM", "High", true) }
+        item { Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFE5E7EB))) }
+        item { MockTaskListItem("Email client: pricing update", "Today • by 2:00 PM", null, false) }
+        item { Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFE5E7EB))) }
+        item { MockTaskListItem("Review design sprint notes", "Today • 4:30 PM", "Low", false) }
+        item { Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFE5E7EB))) }
+        item { MockTaskListItem("Update brand guidelines", "Tomorrow • 10:00 AM", null, false) }
+        item { Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFE5E7EB))) }
       }
     }
 
-    // Task List LazyColumn
-    LazyColumn(
+    // FAB
+    FloatingActionButton(
+      onClick = { /* Add task action */ },
+      containerColor = Color.Black,
+      contentColor = Color.White,
+      shape = CircleShape,
       modifier = Modifier
-        .fillMaxSize()
-        .padding(horizontal = 18.dp),
-      verticalArrangement = Arrangement.spacedBy(10.dp)
+        .align(Alignment.BottomEnd)
+        .padding(16.dp)
+        .size(56.dp)
     ) {
-      item {
-        Spacer(modifier = Modifier.height(4.dp))
-      }
+      Icon(Icons.Default.Add, contentDescription = "Add Task", modifier = Modifier.size(24.dp))
+    }
+  }
+}
 
-      if (tasks.isEmpty()) {
-        item {
-          Card(
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(top = 20.dp),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(
-              containerColor = MaterialTheme.colorScheme.surface
-            )
-          ) {
-            Column(
-              modifier = Modifier
-                .fillMaxWidth()
-                .padding(32.dp),
-              horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-              Box(
-                modifier = Modifier
-                  .size(60.dp)
-                  .clip(CircleShape)
-                  .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center
-              ) {
-                Icon(
-                  imageVector = Icons.Default.TaskAlt,
-                  contentDescription = null,
-                  tint = MaterialTheme.colorScheme.primary,
-                  modifier = Modifier.size(32.dp)
-                )
-              }
-              Spacer(modifier = Modifier.height(14.dp))
-              Text(
-                text = if (searchQuery.isNotEmpty()) "No matching tasks" else "No tasks in this view",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-              )
-              Text(
-                text = if (searchQuery.isNotEmpty()) {
-                  "Try adjusting your search query or filters."
-                } else {
-                  "You're all caught up! Create a new task to stay organized."
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp)
-              )
-              Spacer(modifier = Modifier.height(16.dp))
-              Button(
-                onClick = onAddTaskClick,
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.testTag("empty_add_task_btn")
-              ) {
-                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
-                Spacer(modifier = Modifier.width(6.dp))
-                Text("Create New Task")
-              }
-            }
-          }
-        }
-      } else {
-        items(tasks, key = { it.id }) { task ->
-          TaskCard(
-            task = task,
-            onToggleComplete = { onToggleTask(task) },
-            onToggleSubtask = { subtaskId -> onToggleSubtask(task, subtaskId) },
-            onEdit = { onEditTask(task) },
-            onDelete = { onDeleteTask(task.id) }
-          )
-        }
-      }
+@Composable
+fun FilterChip(text: String, isActive: Boolean, hasClose: Boolean = false) {
+  Row(
+    modifier = Modifier
+      .height(32.dp)
+      .border(1.dp, if (isActive) Color.Black else Color(0xFFD1D5DB), RoundedCornerShape(16.dp))
+      .background(if (isActive) Color(0xFFF3F4F6) else Color.White, RoundedCornerShape(16.dp))
+      .padding(horizontal = 12.dp),
+    verticalAlignment = Alignment.CenterVertically
+  ) {
+    Text(
+      text = text,
+      color = if (isActive) Color.Black else Color(0xFF4B5563),
+      fontSize = 12.sp,
+      fontWeight = if (isActive) FontWeight.Medium else FontWeight.Normal
+    )
+    if (hasClose) {
+      Spacer(modifier = Modifier.width(6.dp))
+      Icon(Icons.Default.Close, contentDescription = "Remove", tint = Color.Black, modifier = Modifier.size(12.dp))
+    }
+  }
+}
 
-      item {
-        Spacer(modifier = Modifier.height(90.dp)) // space for bottom navigation & fab
-      }
+@Composable
+fun DateCard(date: String, day: String, isSelected: Boolean) {
+  Column(
+    modifier = Modifier
+      .width(56.dp)
+      .height(72.dp)
+      .border(1.dp, if (isSelected) Color.Black else Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
+      .background(if (isSelected) Color.Black else Color.White, RoundedCornerShape(12.dp))
+      .padding(8.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center
+  ) {
+    Text(
+      text = date,
+      style = MaterialTheme.typography.titleMedium,
+      fontWeight = FontWeight.Bold,
+      color = if (isSelected) Color.White else Color.Black
+    )
+    Text(
+      text = day,
+      style = MaterialTheme.typography.bodySmall,
+      color = if (isSelected) Color.White else Color(0xFF6B7280)
+    )
+  }
+}
+
+@Composable
+fun MockTaskListItem(title: String, subtitle: String, tag: String?, hasImage: Boolean) {
+  Row(
+    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp),
+    verticalAlignment = Alignment.Top
+  ) {
+    Box(
+      modifier = Modifier
+        .size(20.dp)
+        .border(1.dp, Color(0xFFD1D5DB), RoundedCornerShape(4.dp))
+        .background(Color.White)
+        .padding(top = 2.dp)
+    )
+    Spacer(modifier = Modifier.width(16.dp))
+    
+    if (hasImage) {
+      Box(modifier = Modifier.size(36.dp).background(Color(0xFFE5E7EB), RoundedCornerShape(4.dp)))
+      Spacer(modifier = Modifier.width(12.dp))
+    }
+    
+    Column(modifier = Modifier.weight(1f)) {
+      Text(title, style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Medium)
+      Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Color(0xFF6B7280))
+    }
+    
+    if (tag != null) {
+      Text(
+        text = tag,
+        style = MaterialTheme.typography.labelSmall,
+        color = if (tag == "High") Color(0xFFEF4444) else Color(0xFF6B7280),
+        fontWeight = if (tag == "High") FontWeight.Medium else FontWeight.Normal
+      )
     }
   }
 }

@@ -2,59 +2,59 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Geometric Balance Palette - Light Mode
-val PrimaryLight = Color(0xFF6750A4)
+// TaskFlow Palette - Light Mode
+val PrimaryLight = Color(0xFF000000)
 val OnPrimaryLight = Color(0xFFFFFFFF)
-val PrimaryContainerLight = Color(0xFFEADDFF)
-val OnPrimaryContainerLight = Color(0xFF21005D)
+val PrimaryContainerLight = Color(0xFFF3F4F6)
+val OnPrimaryContainerLight = Color(0xFF111827)
 
-val SecondaryLight = Color(0xFF625B71)
+val SecondaryLight = Color(0xFF4B5563)
 val OnSecondaryLight = Color(0xFFFFFFFF)
-val SecondaryContainerLight = Color(0xFFE8DEF8)
-val OnSecondaryContainerLight = Color(0xFF1D192B)
+val SecondaryContainerLight = Color(0xFFF9FAFB)
+val OnSecondaryContainerLight = Color(0xFF374151)
 
-val TertiaryLight = Color(0xFF7D5260)
+val TertiaryLight = Color(0xFF3B82F6) // A nice light blue for accents
 val OnTertiaryLight = Color(0xFFFFFFFF)
-val TertiaryContainerLight = Color(0xFFFFD8E4)
-val OnTertiaryContainerLight = Color(0xFF31111D)
+val TertiaryContainerLight = Color(0xFFDBEAFE)
+val OnTertiaryContainerLight = Color(0xFF1E3A8A)
 
-val BackgroundLight = Color(0xFFFEF7FF)
-val OnBackgroundLight = Color(0xFF1D1B20)
-val SurfaceLight = Color(0xFFFEF7FF)
-val OnSurfaceLight = Color(0xFF1D1B20)
-val SurfaceVariantLight = Color(0xFFE7E0EC)
-val OnSurfaceVariantLight = Color(0xFF49454F)
-val OutlineLight = Color(0xFF79747E)
-val OutlineVariantLight = Color(0xFFCAC4D0)
+val BackgroundLight = Color(0xFFFFFFFF)
+val OnBackgroundLight = Color(0xFF111827)
+val SurfaceLight = Color(0xFFFFFFFF)
+val OnSurfaceLight = Color(0xFF111827)
+val SurfaceVariantLight = Color(0xFFF3F4F6)
+val OnSurfaceVariantLight = Color(0xFF4B5563)
+val OutlineLight = Color(0xFFD1D5DB)
+val OutlineVariantLight = Color(0xFFE5E7EB)
 
-// Geometric Balance Palette - Dark Mode
-val PrimaryDark = Color(0xFFD0BCFF)
-val OnPrimaryDark = Color(0xFF381E72)
-val PrimaryContainerDark = Color(0xFF4F378B)
-val OnPrimaryContainerDark = Color(0xFFEADDFF)
+// TaskFlow Palette - Dark Mode (Approximated)
+val PrimaryDark = Color(0xFFFFFFFF)
+val OnPrimaryDark = Color(0xFF000000)
+val PrimaryContainerDark = Color(0xFF374151)
+val OnPrimaryContainerDark = Color(0xFFF3F4F6)
 
-val SecondaryDark = Color(0xFFCCC2DC)
-val OnSecondaryDark = Color(0xFF332D41)
-val SecondaryContainerDark = Color(0xFF4A4458)
-val OnSecondaryContainerDark = Color(0xFFE8DEF8)
+val SecondaryDark = Color(0xFF9CA3AF)
+val OnSecondaryDark = Color(0xFF111827)
+val SecondaryContainerDark = Color(0xFF1F2937)
+val OnSecondaryContainerDark = Color(0xFFE5E7EB)
 
-val TertiaryDark = Color(0xFFEFB8C8)
-val OnTertiaryDark = Color(0xFF492532)
-val TertiaryContainerDark = Color(0xFF633B48)
-val OnTertiaryContainerDark = Color(0xFFFFD8E4)
+val TertiaryDark = Color(0xFF60A5FA)
+val OnTertiaryDark = Color(0xFF000000)
+val TertiaryContainerDark = Color(0xFF1E3A8A)
+val OnTertiaryContainerDark = Color(0xFFDBEAFE)
 
-val BackgroundDark = Color(0xFF141218)
-val OnBackgroundDark = Color(0xFFE6E1E5)
-val SurfaceDark = Color(0xFF141218)
-val OnSurfaceDark = Color(0xFFE6E1E5)
-val SurfaceVariantDark = Color(0xFF49454F)
-val OnSurfaceVariantDark = Color(0xFFCAC4D0)
-val OutlineDark = Color(0xFF938F99)
-val OutlineVariantDark = Color(0xFF49454F)
+val BackgroundDark = Color(0xFF111827)
+val OnBackgroundDark = Color(0xFFF9FAFB)
+val SurfaceDark = Color(0xFF1F2937)
+val OnSurfaceDark = Color(0xFFF9FAFB)
+val SurfaceVariantDark = Color(0xFF374151)
+val OnSurfaceVariantDark = Color(0xFFD1D5DB)
+val OutlineDark = Color(0xFF4B5563)
+val OutlineVariantDark = Color(0xFF374151)
 
-// Geometric Status & Accent Colors
-val ProgressSuccess = Color(0xFF2E7D32)
-val ProgressWarning = Color(0xFFE65100)
-val ProgressDanger = Color(0xFFBA1A1A)
-val ProgressInfo = Color(0xFF6750A4)
+// TaskFlow Status & Accent Colors
+val ProgressSuccess = Color(0xFF10B981) // Green
+val ProgressWarning = Color(0xFFF59E0B) // Yellow/Orange
+val ProgressDanger = Color(0xFFEF4444) // Red
+val ProgressInfo = Color(0xFF3B82F6) // Blue
 
