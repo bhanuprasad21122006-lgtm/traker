@@ -32,6 +32,7 @@ data class Task(
   val dueDate: Long = System.currentTimeMillis(),
   val estimatedMinutes: Int = 30,
   val isCompleted: Boolean = false,
+  val isStarred: Boolean = false,
   val completedAt: Long? = null,
   val subtasksRaw: String = "",
   val createdAt: Long = System.currentTimeMillis()

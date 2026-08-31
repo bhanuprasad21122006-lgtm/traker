@@ -1,8 +1,5 @@
 package com.example.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,18 +14,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Assignment
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.Insights
-import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Assignment
-import androidx.compose.material.icons.outlined.Dashboard
-import androidx.compose.material.icons.outlined.Insights
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,6 +40,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +59,9 @@ import com.example.ui.screens.TasksScreen
 import com.example.ui.viewmodel.NavTab
 import com.example.ui.viewmodel.TaskTrackerViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,11 +94,6 @@ fun TaskTrackerApp(viewModel: TaskTrackerViewModel) {
     return
   }
 
-  val streakDays = viewModel.calculateStreak(userTasks)
-  val weeklyData = viewModel.calculateWeeklyData(userTasks, user.dailyTaskGoal)
-  val categoryProgress = viewModel.calculateCategoryProgress(userTasks)
-  val achievements = viewModel.calculateAchievements(userTasks, streakDays)
-
   // Sheet state for Add / Edit
   var showTaskSheet by remember { mutableStateOf(false) }
   var taskToEdit by remember { mutableStateOf<Task?>(null) }
@@ -111,69 +102,43 @@ fun TaskTrackerApp(viewModel: TaskTrackerViewModel) {
 
   Scaffold(
     topBar = {
+      val dateFormat = SimpleDateFormat("EEE, MMM d", Locale.getDefault())
+      val todayDateString = dateFormat.format(Date())
+
       CenterAlignedTopAppBar(
         title = {
+          Text(
+            text = todayDateString,
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Gray,
+            fontSize = 16.sp
+          )
+        },
+        navigationIcon = {
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(start = 12.dp)
           ) {
-            Box(
-              modifier = Modifier
-                .size(28.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.primary),
-              contentAlignment = Alignment.Center
-            ) {
-              Icon(
-                imageVector = Icons.Default.CheckCircle,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(18.dp)
-              )
-            }
+            Icon(
+              imageVector = Icons.Default.Menu,
+              contentDescription = "Menu",
+              modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
             Text(
-              text = "Task Tracker",
-              style = MaterialTheme.typography.titleMedium,
+              text = "TaskFlow",
+              style = MaterialTheme.typography.titleLarge,
               fontWeight = FontWeight.Bold,
-              color = MaterialTheme.colorScheme.onSurface
+              color = Color.Black
             )
           }
         },
-        navigationIcon = {
+        actions = {
           IconButton(
             onClick = { viewModel.setTab(NavTab.PROFILE) },
-            modifier = Modifier.padding(start = 6.dp).testTag("top_bar_avatar_btn")
+            modifier = Modifier.padding(end = 6.dp).testTag("top_bar_avatar_btn")
           ) {
-            UserAvatar(avatarId = user.avatarId, size = 34.dp, borderWidth = 1.5.dp)
-          }
-        },
-        actions = {
-          // Streak pill badge
-          Box(
-            modifier = Modifier
-              .padding(end = 12.dp)
-              .clip(RoundedCornerShape(12.dp))
-              .background(Color(0xFFF97316).copy(alpha = 0.15f))
-              .padding(horizontal = 8.dp, vertical = 4.dp)
-          ) {
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.spacedBy(3.dp)
-            ) {
-              Icon(
-                imageVector = Icons.Default.LocalFireDepartment,
-                contentDescription = "Streak",
-                tint = Color(0xFFF97316),
-                modifier = Modifier.size(15.dp)
-              )
-              Text(
-                text = "$streakDays d",
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFF97316),
-                fontSize = 12.sp
-              )
-            }
+            UserAvatar(avatarId = user.avatarId, size = 32.dp)
           }
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -183,58 +148,31 @@ fun TaskTrackerApp(viewModel: TaskTrackerViewModel) {
     },
     bottomBar = {
       NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 6.dp
+        containerColor = Color.White,
+        tonalElevation = 0.dp,
+        modifier = Modifier.drawBehind {
+          drawLine(
+            color = Color(0xFFEEEEEE),
+            start = Offset(0f, 0f),
+            end = Offset(size.width, 0f),
+            strokeWidth = 1.dp.toPx()
+          )
+        }
       ) {
         NavigationBarItem(
-          selected = selectedTab == NavTab.DASHBOARD,
+          selected = selectedTab == NavTab.DASHBOARD || selectedTab == NavTab.TASKS,
           onClick = { viewModel.setTab(NavTab.DASHBOARD) },
           icon = {
             Icon(
-              imageVector = if (selectedTab == NavTab.DASHBOARD) Icons.Filled.Dashboard else Icons.Outlined.Dashboard,
-              contentDescription = "Dashboard"
-            )
-          },
-          label = { Text("Dashboard", fontWeight = if (selectedTab == NavTab.DASHBOARD) FontWeight.Bold else FontWeight.Normal) },
-          colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = MaterialTheme.colorScheme.primary,
-            indicatorColor = MaterialTheme.colorScheme.primaryContainer
-          ),
-          modifier = Modifier.testTag("nav_tab_dashboard")
-        )
-
-        NavigationBarItem(
-          selected = selectedTab == NavTab.TASKS,
-          onClick = { viewModel.setTab(NavTab.TASKS) },
-          icon = {
-            Icon(
-              imageVector = if (selectedTab == NavTab.TASKS) Icons.Filled.Assignment else Icons.Outlined.Assignment,
+              imageVector = if (selectedTab == NavTab.DASHBOARD || selectedTab == NavTab.TASKS) Icons.Filled.Assignment else Icons.Outlined.Assignment,
               contentDescription = "Tasks"
             )
           },
-          label = { Text("Tasks", fontWeight = if (selectedTab == NavTab.TASKS) FontWeight.Bold else FontWeight.Normal) },
+          label = { Text("Tasks") },
           colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = MaterialTheme.colorScheme.primary,
-            indicatorColor = MaterialTheme.colorScheme.primaryContainer
-          ),
-          modifier = Modifier.testTag("nav_tab_tasks")
-        )
-
-        NavigationBarItem(
-          selected = selectedTab == NavTab.ANALYTICS,
-          onClick = { viewModel.setTab(NavTab.ANALYTICS) },
-          icon = {
-            Icon(
-              imageVector = if (selectedTab == NavTab.ANALYTICS) Icons.Filled.Insights else Icons.Outlined.Insights,
-              contentDescription = "Analytics"
-            )
-          },
-          label = { Text("Analytics", fontWeight = if (selectedTab == NavTab.ANALYTICS) FontWeight.Bold else FontWeight.Normal) },
-          colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = MaterialTheme.colorScheme.primary,
-            indicatorColor = MaterialTheme.colorScheme.primaryContainer
-          ),
-          modifier = Modifier.testTag("nav_tab_analytics")
+            selectedIconColor = Color.Black,
+            indicatorColor = Color.Transparent
+          )
         )
 
         NavigationBarItem(
@@ -242,16 +180,15 @@ fun TaskTrackerApp(viewModel: TaskTrackerViewModel) {
           onClick = { viewModel.setTab(NavTab.PROFILE) },
           icon = {
             Icon(
-              imageVector = if (selectedTab == NavTab.PROFILE) Icons.Filled.Person else Icons.Outlined.Person,
-              contentDescription = "Profile"
+              imageVector = if (selectedTab == NavTab.PROFILE) Icons.Filled.Settings else Icons.Outlined.Settings,
+              contentDescription = "Settings"
             )
           },
-          label = { Text("Profile", fontWeight = if (selectedTab == NavTab.PROFILE) FontWeight.Bold else FontWeight.Normal) },
+          label = { Text("Settings") },
           colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = MaterialTheme.colorScheme.primary,
-            indicatorColor = MaterialTheme.colorScheme.primaryContainer
-          ),
-          modifier = Modifier.testTag("nav_tab_profile")
+            selectedIconColor = Color.Black,
+            indicatorColor = Color.Transparent
+          )
         )
       }
     },
@@ -262,7 +199,7 @@ fun TaskTrackerApp(viewModel: TaskTrackerViewModel) {
             taskToEdit = null
             showTaskSheet = true
           },
-          containerColor = MaterialTheme.colorScheme.primary,
+          containerColor = Color.Black,
           contentColor = Color.White,
           shape = CircleShape,
           modifier = Modifier
@@ -288,9 +225,9 @@ fun TaskTrackerApp(viewModel: TaskTrackerViewModel) {
           DashboardScreen(
             user = user,
             tasks = userTasks,
-            streakDays = streakDays,
-            weeklyData = weeklyData,
-            categoryProgress = categoryProgress,
+            streakDays = viewModel.calculateStreak(userTasks),
+            weeklyData = viewModel.calculateWeeklyData(userTasks, user.dailyTaskGoal),
+            categoryProgress = viewModel.calculateCategoryProgress(userTasks),
             onToggleTask = { t -> viewModel.toggleTaskCompletion(t) },
             onToggleSubtask = { t, subId -> viewModel.toggleSubtask(t, subId) },
             onEditTask = { t ->
@@ -303,7 +240,8 @@ fun TaskTrackerApp(viewModel: TaskTrackerViewModel) {
             onAddTaskClick = {
               taskToEdit = null
               showTaskSheet = true
-            }
+            },
+            onQuickAdd = { title -> viewModel.quickAddTask(title) }
           )
         }
 
@@ -338,10 +276,10 @@ fun TaskTrackerApp(viewModel: TaskTrackerViewModel) {
           AnalyticsScreen(
             user = user,
             tasks = userTasks,
-            streakDays = streakDays,
-            weeklyData = weeklyData,
-            categoryProgress = categoryProgress,
-            achievements = achievements
+            streakDays = viewModel.calculateStreak(userTasks),
+            weeklyData = viewModel.calculateWeeklyData(userTasks, user.dailyTaskGoal),
+            categoryProgress = viewModel.calculateCategoryProgress(userTasks),
+            achievements = viewModel.calculateAchievements(userTasks, viewModel.calculateStreak(userTasks))
           )
         }
 

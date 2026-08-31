@@ -325,9 +325,28 @@ class TaskTrackerViewModel(application: Application) : AndroidViewModel(applicat
     }
   }
 
+  fun toggleTaskStarred(task: Task) {
+    viewModelScope.launch {
+      val updated = task.copy(isStarred = !task.isStarred)
+      repository.updateTask(updated)
+    }
+  }
+
   fun toggleSubtask(task: Task, subtaskId: String) {
     viewModelScope.launch {
       repository.toggleSubtask(task, subtaskId)
+    }
+  }
+
+  fun quickAddTask(title: String) {
+    val userId = _currentUserId.value ?: return
+    viewModelScope.launch {
+      val newTask = Task(
+        userId = userId,
+        title = title.trim(),
+        dueDate = System.currentTimeMillis()
+      )
+      repository.insertTask(newTask)
     }
   }
 
